@@ -1,0 +1,5 @@
+[x] Create a struct to represent the task
+[x] Create a command line reader 
+[] Create a writer to write into the JSON files
+[] Create a loader to load the JSON files
+[] Create an application 
