@@ -7,10 +7,10 @@ type ListCommand struct {
 	filterStatus  Status
 }
 
-func (l *ListCommand) CheckCommandLineArguments(commandLineArguments []string) {
+func (l *ListCommand) initialize(commandLineArguments []string) error {
 
 	if len(commandLineArguments) == 1 {
-		return
+		return nil // todo return error here
 	}
 
 	switch commandLineArguments[1] {
@@ -26,13 +26,17 @@ func (l *ListCommand) CheckCommandLineArguments(commandLineArguments []string) {
 	default:
 		fmt.Println("No such filter")
 	}
+
+	return nil
 }
 
-func (l *ListCommand) executeCommand(tasks []Task) {
+func (l *ListCommand) execute(tasks *Tasks) error {
 
-	for _, task := range tasks {
+	for _, task := range *tasks {
 		if !l.filterPresent || task.Status == l.filterStatus {
 			fmt.Println(task)
 		}
 	}
+
+	return nil
 }

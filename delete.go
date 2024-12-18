@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"strconv"
 )
 
@@ -9,33 +8,16 @@ type DeleteCommand struct {
 	taskId int
 }
 
-func (d *DeleteCommand) CheckCommandLineArguments(commandLineArguments []string) {
+func (d *DeleteCommand) initialize(commandLineArguments []string) error {
 	if len(commandLineArguments) != 2 {
-		return
+		return nil
 	}
 
 	d.taskId, _ = strconv.Atoi(commandLineArguments[1])
+
+	return nil
 }
 
-func findSliceIndex(tasks []Task, id int) int {
-	for index, task := range tasks {
-		if task.Id == id {
-			return index
-		}
-	}
-	return -1
-}
-
-func (d *DeleteCommand) executeCommand(tasks *[]Task) {
-	var index int = findSliceIndex(*tasks, d.taskId)
-
-	if index < 0 || index >= len(*tasks) {
-		return
-	}
-
-	fmt.Println(index)
-
-	*tasks = append((*tasks)[:index], (*tasks)[index+1:]...)
-
-	fmt.Println(tasks)
+func (d *DeleteCommand) execute(tasks *Tasks) error {
+	return tasks.removeTask(d.taskId)
 }

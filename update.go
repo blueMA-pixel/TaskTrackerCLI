@@ -10,23 +10,27 @@ type UpdateCommand struct {
 	newDescription string
 }
 
-func (u *UpdateCommand) CheckCommandLineArguments(commandLineArguments []string) {
+func (u *UpdateCommand) initialize(commandLineArguments []string) error {
 	if len(commandLineArguments) < 2 || len(commandLineArguments) > 3 {
-		return
+		return nil
 	}
 
 	u.id, _ = strconv.Atoi(commandLineArguments[1])
 	u.newDescription = commandLineArguments[2]
+
+	return nil
 }
 
-func (u *UpdateCommand) executeCommand(tasks *[]Task) {
-	var taskIndex = findSliceIndex(*tasks, u.id)
+func (u *UpdateCommand) execute(tasks *Tasks) error {
 
-	if taskIndex < 0 || taskIndex > len(*tasks)-1 {
-		return
+	task, _, err := tasks.findTask(u.id)
+
+	if err != nil {
+		return err
 	}
 
-	(*tasks)[taskIndex].Description = u.newDescription
-	(*tasks)[taskIndex].UpdateTime = time.Now()
+	(*task).Description = u.newDescription
+	(*task).UpdateTime = time.Now()
 
+	return nil
 }

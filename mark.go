@@ -10,9 +10,9 @@ type MarkAsCommand struct {
 	newStatus Status
 }
 
-func (m *MarkAsCommand) CheckCommandLineArguments(commandLineArguments []string) {
+func (m *MarkAsCommand) initialize(commandLineArguments []string) error {
 	if len(commandLineArguments) != 2 {
-		return
+		return nil
 	}
 
 	switch commandLineArguments[0] {
@@ -21,20 +21,24 @@ func (m *MarkAsCommand) CheckCommandLineArguments(commandLineArguments []string)
 	case "mark-in-progress":
 		m.newStatus = InProgress
 	default:
-		return
+		return nil
 	}
 
 	m.id, _ = strconv.Atoi(commandLineArguments[1])
 
+	return nil
 }
 
-func (m *MarkAsCommand) executeCommand(tasks *[]Task) {
-	var taskIndex int = findSliceIndex(*tasks, m.id)
+func (m *MarkAsCommand) execute(tasks *Tasks) error {
 
-	if taskIndex < 0 || taskIndex > len(*tasks)-1 {
-		return
+	task, _, err := tasks.findTask(m.id)
+
+	if err != nil {
+		return err
 	}
 
-	(*tasks)[taskIndex].Status = m.newStatus
-	(*tasks)[taskIndex].UpdateTime = time.Now()
+	task.Status = m.newStatus
+	task.UpdateTime = time.Now()
+
+	return nil
 }
