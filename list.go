@@ -3,28 +3,24 @@ package main
 import "fmt"
 
 type ListCommand struct {
-	filterPresent bool
-	filterStatus  Status
+	filterStatus Status
 }
 
 func (l *ListCommand) initialize(commandLineArguments []string) error {
 
 	if len(commandLineArguments) == 1 {
-		return nil // todo return error here
+		return fmt.Errorf("list Command Could not be initialized")
 	}
 
 	switch commandLineArguments[1] {
 	case "done":
 		l.filterStatus = Done
-		l.filterPresent = true
 	case "to-do":
 		l.filterStatus = ToDo
-		l.filterPresent = true
 	case "in-progress":
 		l.filterStatus = InProgress
-		l.filterPresent = true
 	default:
-		fmt.Println("No such filter")
+		return fmt.Errorf("no such status filter")
 	}
 
 	return nil
@@ -33,7 +29,7 @@ func (l *ListCommand) initialize(commandLineArguments []string) error {
 func (l *ListCommand) execute(tasks *Tasks) error {
 
 	for _, task := range *tasks {
-		if !l.filterPresent || task.Status == l.filterStatus {
+		if l.filterStatus != Invalid && task.Status == l.filterStatus {
 			fmt.Println(task)
 		}
 	}

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"time"
 )
 
@@ -10,7 +11,7 @@ type AddCommand struct {
 
 func (addCommand *AddCommand) initialize(commandLineArguments []string) error {
 	if len(commandLineArguments) == 1 || len(commandLineArguments) > 2 {
-		return nil
+		return fmt.Errorf("add command requires a description only")
 	}
 
 	addCommand.description = commandLineArguments[1]

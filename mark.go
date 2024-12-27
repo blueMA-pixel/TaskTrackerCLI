@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 )
@@ -12,7 +13,7 @@ type MarkAsCommand struct {
 
 func (m *MarkAsCommand) initialize(commandLineArguments []string) error {
 	if len(commandLineArguments) != 2 {
-		return nil
+		return fmt.Errorf("mark command requires an id only")
 	}
 
 	switch commandLineArguments[0] {
@@ -21,7 +22,7 @@ func (m *MarkAsCommand) initialize(commandLineArguments []string) error {
 	case "mark-in-progress":
 		m.newStatus = InProgress
 	default:
-		return nil
+		return fmt.Errorf("no such command")
 	}
 
 	m.id, _ = strconv.Atoi(commandLineArguments[1])
@@ -40,5 +41,5 @@ func (m *MarkAsCommand) execute(tasks *Tasks) error {
 	task.Status = m.newStatus
 	task.UpdateTime = time.Now()
 
-	return nil
+	return err
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strconv"
 )
 
@@ -10,7 +11,7 @@ type DeleteCommand struct {
 
 func (d *DeleteCommand) initialize(commandLineArguments []string) error {
 	if len(commandLineArguments) != 2 {
-		return nil
+		return fmt.Errorf("delete command requires an id only")
 	}
 
 	d.taskId, _ = strconv.Atoi(commandLineArguments[1])

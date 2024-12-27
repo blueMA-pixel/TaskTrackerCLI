@@ -8,7 +8,8 @@ import (
 type Status int
 
 const (
-	ToDo Status = iota
+	Invalid        = -1
+	ToDo    Status = iota
 	InProgress
 	Done
 )
@@ -53,7 +54,7 @@ func (tasks *Tasks) findTask(id int) (*Task, int, error) {
 		}
 	}
 
-	return nil, -1, nil // Todo: add an error
+	return nil, -1, fmt.Errorf("no task with id number %d", id)
 }
 
 func (tasks *Tasks) removeTask(id int) error {

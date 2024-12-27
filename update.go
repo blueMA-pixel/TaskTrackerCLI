@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 )
@@ -12,7 +13,7 @@ type UpdateCommand struct {
 
 func (u *UpdateCommand) initialize(commandLineArguments []string) error {
 	if len(commandLineArguments) < 2 || len(commandLineArguments) > 3 {
-		return nil
+		return fmt.Errorf("update command requires an id and a new description")
 	}
 
 	u.id, _ = strconv.Atoi(commandLineArguments[1])
