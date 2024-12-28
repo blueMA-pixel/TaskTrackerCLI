@@ -107,19 +107,7 @@ go run . mark-in-progress 1
 
 This will mark the task with ID `1` as `in-progress`.
 
-## File Structure
-
-```
-TaskTrackerCLI/
-│
-├── main.go          # Entry point for the CLI application
-├── tasks.go         # Task data structure and logic
-├── commands.go      # Command handling logic
-└── README.md        # Project documentation
-```
-
 ## Notes
-- Task IDs are automatically assigned when tasks are created.
 - Task statuses include `to-do`, `in-progress`, and `done`.
 
 ## Contribution
