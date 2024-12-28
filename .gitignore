@@ -1,0 +1,31 @@
+# Ignore all `.log` files
+*.log
+
+# Ignore all `.tmp` files
+*.tmp
+
+# Ignore node_modules directory (for Node.js projects)
+node_modules/
+
+# Ignore Python bytecode files
+__pycache__/
+*.pyc
+
+# Ignore build or dist directories
+build/
+dist/
+
+# Ignore macOS system files
+.DS_Store
+
+# Ignore IDE-specific files (e.g., IntelliJ, Visual Studio Code)
+.idea/
+.vscode/
+
+# Ignore test output files
+*.test.js
+*.out
+
+*.exe
+*.mod
+*.json
