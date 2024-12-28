@@ -1,10 +1,8 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
-	"os"
 )
 
 const listCommand string = "list"
@@ -15,22 +13,23 @@ const markasDoneCommand string = "mark-as-done"
 const markinProgressCommand string = "mark-in-progress"
 
 type Application struct {
-	tasks    Tasks
-	command  ICommand
-	fileName string
+	tasks            Tasks
+	command          ICommand
+	writer           io.Writer
+	tasksDataHandler ITaskDataHandler
 }
 
-func (app *Application) initialize(commandLineArguments []string, fileName string) error {
+func (app *Application) initialize(commandLineArguments []string, writer io.Writer, tasksDataHandler ITaskDataHandler) error {
 
-	if len(fileName) == 0 {
-		return fmt.Errorf("file name is empty")
-	}
-
-	if len(commandLineArguments) <= 1 {
+	if len(commandLineArguments) < 1 {
 		return fmt.Errorf("include a command")
 	}
 
-	app.fileName = fileName
+	if tasksDataHandler == nil {
+		return fmt.Errorf("task data handler is not initialized")
+	}
+
+	app.tasksDataHandler = tasksDataHandler
 
 	switch commandLineArguments[0] {
 	case listCommand:
@@ -45,67 +44,28 @@ func (app *Application) initialize(commandLineArguments []string, fileName strin
 		app.command = &MarkAsCommand{}
 	}
 
-	return app.command.initialize(commandLineArguments)
-}
-
-func (handler *Application) readTasks() error {
-	jsonFile, err := os.OpenFile(handler.fileName, os.O_RDWR|os.O_CREATE, 0644)
-
-	if err != nil {
-		return err
-	}
-
-	defer jsonFile.Close()
-
-	byteValue, err := io.ReadAll(jsonFile)
-
-	if err != nil {
-		return err
-	}
-
-	return json.Unmarshal(byteValue, &handler.tasks)
-}
-
-func (handler *Application) writeTasks() error {
-
-	jsonFile, err := os.OpenFile(handler.fileName, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
-
-	if err != nil {
-		return err
-	}
-
-	defer jsonFile.Close()
-
-	byteValue, err := json.Marshal(handler.tasks)
-
-	if err != nil {
-		return err
-	}
-
-	_, writeErr := jsonFile.Write(byteValue)
-
-	return writeErr
+	return app.command.initialize(commandLineArguments, writer)
 }
 
 func (app *Application) run() error {
-	err := app.readTasks()
+	err := app.tasksDataHandler.readTasks(&app.tasks)
 
 	if err != nil {
-		fmt.Println(err)
+		fmt.Fprintln(app.writer, err)
 		return err
 	}
 
 	err = app.command.execute(&app.tasks)
 
 	if err != nil {
-		fmt.Println(err)
+		fmt.Fprintln(app.writer, err)
 		return err
 	}
 
-	err = app.writeTasks()
+	err = app.tasksDataHandler.writeTasks(&app.tasks)
 
 	if err != nil {
-		fmt.Println(err)
+		fmt.Fprintln(app.writer, err)
 		return err
 	}
 

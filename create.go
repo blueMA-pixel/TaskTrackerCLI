@@ -2,26 +2,29 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"time"
 )
 
 type AddCommand struct {
 	description string
+	writer      io.Writer
 }
 
-func (addCommand *AddCommand) initialize(commandLineArguments []string) error {
+func (a *AddCommand) initialize(commandLineArguments []string, writer io.Writer) error {
 	if len(commandLineArguments) == 1 || len(commandLineArguments) > 2 {
 		return fmt.Errorf("add command requires a description only")
 	}
 
-	addCommand.description = commandLineArguments[1]
+	a.description = commandLineArguments[1]
 
+	a.writer = writer
 	return nil
 }
 
-func (addCommand *AddCommand) execute(tasks *Tasks) error {
+func (a *AddCommand) execute(tasks *Tasks) error {
 	var newTask Task
-	newTask.Description = addCommand.description
+	newTask.Description = a.description
 	newTask.CreationTime = time.Now()
 	newTask.UpdateTime = time.Now()
 	newTask.Status = ToDo

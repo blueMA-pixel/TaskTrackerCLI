@@ -1,15 +1,26 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"io"
+)
 
 type ListCommand struct {
 	filterStatus Status
+	writer       io.Writer
 }
 
-func (l *ListCommand) initialize(commandLineArguments []string) error {
+func (l *ListCommand) initialize(commandLineArguments []string, writer io.Writer) error {
+
+	if len(commandLineArguments) < 1 {
+		return fmt.Errorf("list Command Could not be initialized")
+	}
+
+	l.writer = writer
 
 	if len(commandLineArguments) == 1 {
-		return fmt.Errorf("list Command Could not be initialized")
+		l.filterStatus = Invalid
+		return nil
 	}
 
 	switch commandLineArguments[1] {
@@ -29,8 +40,8 @@ func (l *ListCommand) initialize(commandLineArguments []string) error {
 func (l *ListCommand) execute(tasks *Tasks) error {
 
 	for _, task := range *tasks {
-		if l.filterStatus != Invalid && task.Status == l.filterStatus {
-			fmt.Println(task)
+		if l.filterStatus == Invalid || task.Status == l.filterStatus {
+			fmt.Fprint(l.writer, task)
 		}
 	}
 

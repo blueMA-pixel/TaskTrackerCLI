@@ -9,10 +9,13 @@ func main() {
 
 	var commandLineArguments []string = os.Args[1:]
 	var app Application
-	err := app.initialize(commandLineArguments, "tasks.json")
+	var loader TaskDataHandlerJSON = TaskDataHandlerJSON{fileName: "tasks.json"}
+	err := app.initialize(commandLineArguments, os.Stdout, loader)
+
 	if err != nil {
-		fmt.Println(err)
+		fmt.Fprintln(app.writer, err)
 		return
 	}
+
 	app.run()
 }

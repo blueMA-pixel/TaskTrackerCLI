@@ -1,6 +1,8 @@
 package main
 
+import "io"
+
 type ICommand interface {
-	initialize(commandLineArguments []string) error
+	initialize(commandLineArguments []string, writer io.Writer) error
 	execute(tasks *Tasks) error
 }

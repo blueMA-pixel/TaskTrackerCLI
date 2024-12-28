@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"strconv"
 	"time"
 )
@@ -9,9 +10,10 @@ import (
 type MarkAsCommand struct {
 	id        int
 	newStatus Status
+	writer    io.Writer
 }
 
-func (m *MarkAsCommand) initialize(commandLineArguments []string) error {
+func (m *MarkAsCommand) initialize(commandLineArguments []string, writer io.Writer) error {
 	if len(commandLineArguments) != 2 {
 		return fmt.Errorf("mark command requires an id only")
 	}
@@ -26,7 +28,7 @@ func (m *MarkAsCommand) initialize(commandLineArguments []string) error {
 	}
 
 	m.id, _ = strconv.Atoi(commandLineArguments[1])
-
+	m.writer = writer
 	return nil
 }
 
